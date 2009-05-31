@@ -1,0 +1,38 @@
+<h1><a href='/'>Ear Defender</a></h1>
+<span class="byline">by <a href='http://maryrosecook.com'>maryrosecook</a></span><br/>
+<br/>
+
+<div class="page_content_holder">
+	<% if !@most_popular %>
+		<% if @user %>
+			<% search_field_value = @user.username %>
+			<% search_field_class = "active_preloaded_field" %>
+		<% else %>
+			<% search_field_value = Lastfming::CANNED_SEARCH %>
+			<% search_field_class = "inactive_preloaded_field"%>
+		<% end-%>
+
+		<span class="homepage_intro">Decide what you feel like listening to.</span><br/><br/>
+
+
+		<% form_tag do -%>
+			<input class="text_field <%= search_field_class %>" name="username" id="search_body"
+						 type="text" value="<%= search_field_value %>"
+						 onfocus="processPreloadedText(this, 'onfocus', '<%=Lastfming::CANNED_SEARCH%>');"
+						 onblur="processPreloadedText(this, 'onblur', '<%=Lastfming::CANNED_SEARCH%>');" />
+			<%= submit_tag "Go", :class => 'submit_button' %>
+		<% end-%>
+		<br/>
+	<% else %>
+		<% if @most_popular && @most_popular.length > 0 %>
+			<% for most_popular_key in @most_popular.keys.sort { |x,y| @most_popular[y] <=> @most_popular[x] } %>
+				<%= most_popular_key %><br/>
+			<% end-%>
+		<% else %>
+			Either you don't exist, or you haven't listened to much music.<br/>
+		<% end-%>
+	<% end-%>
+	
+	<br/><br/><br/><br/>
+	
+</div><br/>

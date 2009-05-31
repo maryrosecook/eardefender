@@ -5,8 +5,7 @@ require 'open-uri'
 module Lastfming
   
   MAX_PAGES = 30
-  
-  LAST_FM_API_KEY
+  CANNED_SEARCH = "Last.fm username"
   
   def self.update_scrobbles(user)
     if user
@@ -39,7 +38,7 @@ module Lastfming
             date = date_raw.at("abbr")["title"]
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
             scrobble.save() if scrobble && !scrobble.already_exists? # hasn't already been saved so save it
-            new_scrobbles = false if scrobble.already_exists?
+            #new_scrobbles = false if scrobble.already_exists?
           end
         
           j += 1
@@ -51,7 +50,8 @@ module Lastfming
     end
   end
   
-  def self.get_track_info
-    APIUtil.get_request("http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=#{}&artist=cher&track=believe")
+  LAST_FM_API_KEY = "0fe92bb2a3b1e5b714cc39e2df8da14f"
+  def self.get_track_info(artist, track)
+    APIUtil.get_request("http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=#{LAST_FM_API_KEY}&artist=#{artist}&track=#{track}")
   end
 end
