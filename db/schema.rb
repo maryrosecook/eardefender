@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 1) do
 
   create_table "scrobbles", :force => true do |t|
     t.string   "artist",  :limit => 1000
