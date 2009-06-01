@@ -37,14 +37,13 @@ module Lastfming
             date = date_raw.at("abbr")["title"]
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
             scrobble.save() if scrobble && !scrobble.already_exists? # hasn't already been saved so save it
-            if scrobble.already_exists?
-              new_scrobbles = false 
-            end
+            
+            #new_scrobbles = false if scrobble.already_exists?
           end
         
           j += 1
         end
-      
+
         last_page = true if !doc.at("a.nextlink") # no next link so just processed last_page
         i += 1
       end
