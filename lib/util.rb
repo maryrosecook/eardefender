@@ -13,7 +13,11 @@ module Util
   end
   
   def self.esc_apos(str)
-    str = str.gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'")
+    for i in (0..5)
+      str = str.gsub(/'/, '\\' + "'")
+    end
+    return str
+    #.gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'") 
   end
   
   # shorts passed str to passed word_count
