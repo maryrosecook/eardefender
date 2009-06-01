@@ -38,7 +38,7 @@ module Lastfming
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
             scrobble.save() if scrobble && !scrobble.already_exists? # hasn't already been saved so save it
             
-            #new_scrobbles = false if scrobble.already_exists?
+            new_scrobbles = false if scrobble.already_exists?
           end
         
           j += 1
