@@ -4,7 +4,7 @@ require 'open-uri'
 
 module Lastfming
   
-  MAX_PAGES = 30
+  MAX_PAGES = 9
   CANNED_SEARCH = "Last.fm username"
   
   def self.update_scrobbles(user)
