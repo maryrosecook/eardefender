@@ -36,9 +36,13 @@ module Lastfming
           if date_raw = dates_raw[j] # got date for this track play
             date = date_raw.at("abbr")["title"]
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
-            scrobble.save() if scrobble && !scrobble.already_exists? # hasn't already been saved so save it
-            
-            new_scrobbles = false if scrobble.already_exists?
+            if scrobble
+              if scrobble.already_exists?
+                new_scrobbles = false # stop scraping data
+              else # hasn't already been saved so save it
+                scrobble.save() 
+              end
+            end
           end
         
           j += 1
