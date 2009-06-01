@@ -32,10 +32,11 @@ hr { border:1px #aaa solid; height:1; }
 .back_link { text-align:right; }
 
 .homepage_intro { width:300; }
-.tagline { font-size:17; }
+.tagline { font-size:13; }
 .byline { font-size:12; }
 
 .last_fm_username_form_table { width:350; }
+.last_fm_username_form_label { margin: 0; line-height:8px; }
 .field_title { vertical-align:middle; }
 
 .flash { background-color:#FFFF66; }

@@ -38,7 +38,9 @@ module Lastfming
             date = date_raw.at("abbr")["title"]
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
             scrobble.save() if scrobble && !scrobble.already_exists? # hasn't already been saved so save it
-            #new_scrobbles = false if scrobble.already_exists?
+            if scrobble.already_exists?
+              new_scrobbles = false 
+            end
           end
         
           j += 1
@@ -51,7 +53,20 @@ module Lastfming
   end
   
   LAST_FM_API_KEY = "0fe92bb2a3b1e5b714cc39e2df8da14f"
-  def self.get_track_info(artist, track)
-    APIUtil.get_request("http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=#{LAST_FM_API_KEY}&artist=#{artist}&track=#{track}")
+  def self.get_album(artist, track)
+    album = nil
+    url = APIUtil.safely_parse_url("http://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=#{LAST_FM_API_KEY}&artist=#{artist}&track=#{track}")
+    begin
+      doc = open(url.to_s) do |f|
+        Hpricot.XML(f)
+      end
+
+      if xml_data = doc.at("lfm/track/album/title")
+        album = xml_data.inner_text
+      end
+    rescue
+    end
+    
+    return album
   end
 end

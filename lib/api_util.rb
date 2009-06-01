@@ -15,4 +15,19 @@ module APIUtil
   
     response
   end
+  
+  def self.safely_parse_url(url)
+    parsed_url = nil
+    safer_url = APIUtil::make_url_safe(url)
+    begin
+      parsed_url = URI::parse(safer_url)
+    rescue # failure
+    end
+    
+    parsed_url
+  end
+  
+  def self.make_url_safe(url)
+    url.strip.gsub(/\s/, "%20")
+  end
 end
