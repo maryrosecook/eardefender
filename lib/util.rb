@@ -16,7 +16,7 @@ module Util
     for i in (0..5)
       str = str.gsub(/'/, '\\' + "'")
     end
-    return str.gsub(/'/, '\\' + "'")
+    return str
     #.gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'") 
   end
   
