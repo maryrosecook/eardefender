@@ -13,15 +13,14 @@ module Lastfming
       last_page = false
       new_scrobbles = true
       while i <= MAX_PAGES && !last_page && new_scrobbles # go through all pages to explore until get to captured scrobbles
-        #url = "http://www.last.fm/user/#{user.username}/tracks?page={i}"
-        #doc = Hpricot(open(url))
+        url = "http://www.last.fm/user/#{user.username}/tracks?page=#{i}"
+        doc = Hpricot(open(url))
         
-        file_str = ""
-        File.open("public/tracks#{i}.html", "r") do |f|
-          file_str = f.read
-        end
-        #raise file_str
-        doc = Hpricot(file_str)
+        # file_str = ""
+        # File.open("public/tracks#{i}.html", "r") do |f|
+        #   file_str = f.read
+        # end
+        #doc = Hpricot(file_str)
       
         # get all track details tds and play date tds
         tracks_raw = doc.search("td.subjectCell")

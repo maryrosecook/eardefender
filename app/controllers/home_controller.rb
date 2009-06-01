@@ -7,7 +7,7 @@ class HomeController < ApplicationController
         # set up user
         user = User.find_by_username(params[:username])
         if !user
-          user = User.new_from_request(username)
+          user = User.new_from_request(params[:username])
           user.save()
         end
         cookies[:user_id] = user.id.to_s
