@@ -12,6 +12,10 @@ module Util
     str = str.gsub(/"/, '\"')
   end
   
+  def self.esc_apos(str)
+    str = str.gsub(/'/, "\\'")
+  end
+  
   # shorts passed str to passed word_count
   def self.truncate(str, word_count, elipsis)
     words = str.split()
