@@ -28,9 +28,9 @@ class Scrobble < ActiveRecord::Base
   
   def self.find_unique(artist, track, date, user)
     self.find(:first, :conditions =>  "artist = '#{Util.esc_apos(artist)}' " + 
-                                      "&& track = '#{Util.esc_apos(track)}' " + 
-                                      "&& date = '#{DateUtil.str_sql_date_time(date)}' " +
-                                      "&& user_id = #{user.id.to_s} ")
+                                      "AND track = '#{Util.esc_apos(track)}' " + 
+                                      "AND date = '#{DateUtil.str_sql_date_time(date)}' " +
+                                      "AND user_id = #{user.id.to_s} ")
   end
   
   def fill_in_album
