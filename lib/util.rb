@@ -14,14 +14,8 @@ module Util
   
   def self.esc_apos(str)
     return_str = str
-
-      return_str = return_str.gsub(/'/, "\\\\'")
-
-    # if str == "Fucking's Greatest Hits"
-    #   raise return_str
-    # end
+    return_str = return_str.gsub(/'/, "\\\\'")
     return return_str
-    #.gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'").gsub(/'/, '\\' + "'") 
   end
   
   # shorts passed str to passed word_count
