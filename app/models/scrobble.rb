@@ -27,9 +27,9 @@ class Scrobble < ActiveRecord::Base
   end
   
   def self.find_unique(artist, track, date, user)
-    self.find(:first, :conditions =>  "artist = \"" + Util.esc_speech(artist) + "\"" + 
-                                      "AND track = \"" + Util.esc_speech(track) + "\"" + 
-                                      "AND date = \"" + DateUtil.str_sql_date_time(date) + "\"" +
+    self.find(:first, :conditions =>  "artist = '#{Util.esc_apos(artist)}' " + 
+                                      "AND track = '#{Util.esc_apos(track)}' " + 
+                                      "AND date = '#{DateUtil.str_sql_date_time(date)}' " +
                                       "AND user_id = #{user.id.to_s} ")
   end
   
