@@ -32,7 +32,7 @@ module Lastfming
           artist_and_track = track_raw.search("//a")
           artist = artist_and_track[0].inner_text if artist_and_track[0]
           track = artist_and_track[1].inner_text if artist_and_track[1]
-        
+
           if date_raw = dates_raw[j] # got date for this track play
             date = date_raw.at("abbr")["title"]
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
