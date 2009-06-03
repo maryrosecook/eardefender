@@ -17,8 +17,8 @@ class Scrobble < ActiveRecord::Base
   
   def self.find_by_user_date(user, start_date, end_date)
     conditions = "1 = 1 "
-    conditions += "&& user_id = #{user.id} " if user
-    conditions += "&& date > '#{start_date}' && date < '#{end_date}' " if start_date && end_date
+    conditions += "AND user_id = #{user.id} " if user
+    conditions += "AND date > '#{start_date}' AND date < '#{end_date}' " if start_date && end_date
     return self.find(:all, :conditions => conditions)
   end
   
