@@ -4,8 +4,9 @@ module Choosing
   NUM_MOST_POPULAR_ARTISTS = 3
   NUM_MOST_POPULAR = 3
 
-  def self.choose_scrobbles(user, method)
-    return class_eval(method + "(user.scrobbles)")
+  
+  def self.choose_scrobbles(scrobbles, criteria_method)
+    return class_eval(criteria_method + "(scrobbles)")
   end
 
   ### methods
@@ -97,5 +98,12 @@ module Choosing
     end
     
     return most_popular
+  end
+  
+  def self.albums_from_scrobbles(scrobbles)
+    most_popular_artists = Choosing.most_popular("artist", [], scrobbles)
+    popular_artist_scrobbles = Choosing.filter_scrobbles_by_artist(most_popular_artists.keys, scrobbles)
+    popular_artist_scrobbles.each { |scrobble| scrobble.fill_in_album() }
+    return Choosing.most_popular("album", ["artist"], scrobbles)
   end
 end

@@ -4,23 +4,27 @@ require 'open-uri'
 
 module Lastfming
   
-  MAX_PAGES = 11
-  CANNED_SEARCH = "Last.fm username"
+  MAX_SCROBBLE_PAGES = 11
+  
+  USE_REAL_DATA = true # switch for using local data instead of real scrobbles.  Probably want this on.
+  COMPLETE_SCROBBLE_REINDEX = false # off if want to stop scraping when see scrobble already indexed.  On for complete reindex.
   
   def self.update_scrobbles(user)
     if user
       i = 1
       last_page = false
       new_scrobbles = true
-      while i <= MAX_PAGES && !last_page && new_scrobbles # go through all pages to explore until get to captured scrobbles
-        url = "http://www.last.fm/user/#{user.username}/tracks?page=#{i}"
-        doc = Hpricot(open(url))
-        
-        # file_str = ""
-        # File.open("public/tracks#{i}.html", "r") do |f|
-        #   file_str = f.read
-        # end
-        # doc = Hpricot(file_str)
+      while i <= MAX_SCROBBLE_PAGES && !last_page && new_scrobbles # go through all pages to explore until get to captured scrobbles
+        if USE_REAL_DATA
+          url = "http://www.last.fm/user/#{user.username}/tracks?page=#{i}"
+          doc = Hpricot(open(url))
+        else # just testing so use local files
+          file_str = ""
+          File.open("public/test_data/tracks#{i}.html", "r") do |f|
+            file_str = f.read
+          end
+          doc = Hpricot(file_str)
+        end
       
         # get all track details tds and play date tds
         tracks_raw = doc.search("td.subjectCell")
@@ -38,7 +42,9 @@ module Lastfming
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
             if scrobble
               if scrobble.already_exists?
-                new_scrobbles = false # stop scraping data
+                if !COMPLETE_SCROBBLE_REINDEX
+                  new_scrobbles = false # stop scraping data cause seen this scrobble before, unless doing complete reindex
+                end
               else # hasn't already been saved so save it
                 scrobble.save() 
               end

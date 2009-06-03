@@ -18,6 +18,12 @@ module Util
     return return_str
   end
   
+  # adds additions to hash.  Overwrites existing key entries w/ new ones
+  def self.add_to_hash(hash, additions)
+    additions.keys.each { |addition_key| hash[addition_key] = additions[addition_key] }
+    return hash
+  end
+  
   # shorts passed str to passed word_count
   def self.truncate(str, word_count, elipsis)
     words = str.split()

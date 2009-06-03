@@ -1,7 +1,7 @@
 <div class="page_content_holder">
 	
 	<!-- show username form -->
-	<% if !@most_popular %>
+	<% if !@suggestions %>
 		<br/>
 		<% form_tag do -%>
 		<span class="last_fm_username_form_label">Last.fm username</span><br/>
@@ -13,10 +13,10 @@
 		
 	<!-- show listening suggestions -->
 	<% else %>
-		<% if @most_popular && @most_popular.length > 0 %>
-			<% for most_popular_key in @most_popular.keys.sort { |x,y| @most_popular[y]["count"] <=> @most_popular[x]["count"] } %>
-				<strong><%= @most_popular[most_popular_key]["artist"] %></strong>,
-				<%= most_popular_key %><br/>
+		<% if @suggestions && @suggestions.length > 0 %>
+			<% for suggestion_key in @suggestions.keys.sort { |x,y| @suggestions[y]["count"] <=> @suggestions[x]["count"] } %>
+				<strong><%= @suggestions[suggestion_key]["artist"] %></strong>,
+				<%= suggestion_key %><br/>
 			<% end-%>
 		<% else %>
 			Either you don't exist, or you haven't listened to much music.<br/>
