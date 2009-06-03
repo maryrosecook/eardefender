@@ -1,8 +1,8 @@
 module Choosing
 
   DEFAULT_TIME_HOURS_EITHER_SIDE = 1
-  NUM_MOST_POPULAR_ARTISTS = 3
-  NUM_MOST_POPULAR = 3
+  NUM_MOST_POPULAR_ARTISTS = 2
+  NUM_MOST_POPULAR = 2
 
   
   def self.choose_scrobbles(scrobbles, criteria_method)
@@ -54,29 +54,12 @@ module Choosing
     return return_scrobbles
   end
   
-  def self.most_popular_artists(scrobbles)
-    most_popular_artists = {}
-    artists = {}
-    for scrobble in scrobbles
-      artists[scrobble.artist] = 0 if !artists.has_key?(scrobble.artist)
-      artists[scrobble.artist] += 1
-    end
-
-    artists_by_popularity = artists.keys.sort { |x,y| artists[y] <=> artists[x] }
-    i = 0
-    while i < artists_by_popularity.length && i < NUM_MOST_POPULAR_ARTISTS
-      most_popular_artists[artists_by_popularity[i]] = artists[artists_by_popularity[i]]
-      i += 1
-    end
-    
-    return most_popular_artists
-  end
-  
   def self.most_popular(thing, aux_infos, scrobbles)
     most_popular = {}
     things = {}
     for scrobble in scrobbles
       if Util.ne(eval("scrobble.#{thing}"))
+        
         count = 0 if !things.has_key?(eval("scrobble.#{thing}"))
         count += 1
         

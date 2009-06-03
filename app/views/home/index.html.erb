@@ -14,9 +14,9 @@
 	<!-- show listening suggestions -->
 	<% else %>
 		<% if @suggestions && @suggestions.length > 0 %>
-			<% for suggestion_key in @suggestions.keys.sort { |x,y| @suggestions[y]["count"] <=> @suggestions[x]["count"] } %>
-				<strong><%= @suggestions[suggestion_key]["artist"] %></strong>,
-				<%= suggestion_key %><br/>
+			<% for album in @albums_by_artist %>
+				<strong><%= @suggestions[album]["artist"] %></strong>,
+				<%= album %><br/>
 			<% end-%>
 		<% else %>
 			Either you don't exist, or you haven't listened to much music.<br/>

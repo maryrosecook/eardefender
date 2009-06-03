@@ -17,10 +17,10 @@ class HomeController < ApplicationController
       # get all time most popular albums for current time of current day of week
       Util.add_to_hash(@suggestions, user_time_period_scrobbles(user, nil,  nil, "point_in_week"))
       
-      # get most popular albums for current time of current day at a few points in the past
-      Util.add_to_hash(@suggestions, user_time_period_scrobbles(user, 1.week.ago,  Time.new, "point_in_week"))
+      # get most popular albums for current time of current day a while ago
       Util.add_to_hash(@suggestions, user_time_period_scrobbles(user, 4.weeks.ago, 2.weeks.ago, "point_in_week"))
       
+      @albums_by_artist = @suggestions.keys.sort { |x,y| @suggestions[x]["artist"] <=> @suggestions[y]["artist"] }
     else # just show form
       # prime old user in form if they exist 
       if cookies[:user_id]
