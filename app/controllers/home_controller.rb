@@ -24,7 +24,9 @@ class HomeController < ApplicationController
     else # just show form
       # prime old user in form if they exist 
       if cookies[:user_id]
-        @user = User.find(cookies[:user_id])
+        if user = User.find(cookies[:user_id])
+          @username = user.username
+        end
       end
     end
   end

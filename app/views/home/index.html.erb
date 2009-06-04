@@ -2,14 +2,15 @@
 	
 	<!-- show username form -->
 	<% if !@suggestions %>
-		<br/>
 		<% form_tag do -%>
-		<span class="last_fm_username_form_label">Last.fm username</span><br/>
-			<input class="text_field" name="username" type="text" value="<%= @username %>"/>
-			<%= submit_tag "Go", :class => 'submit_button' %>
+			<span class="last_fm_username_form_label">Last.fm username</span><br/>
+			<input class="text_field" id="username" name="username" type="text" value="<%= @username %>"/>
+			<%= submit_tag "Go", :class => 'submit_button', :onclick => "Element.show('time_warning');" %>
 		<% end-%>
-		<br/><br/>
-		The first time will take about 30 seconds.
+		<br/>
+		<div id="time_warning" style="display:none;">
+			First time will take 30 secs.
+		</div>
 		
 	<!-- show listening suggestions -->
 	<% else %>
