@@ -4,17 +4,21 @@ require 'open-uri'
 
 module Lastfming
   
-  MAX_SCROBBLE_PAGES = 11
-  
   USE_REAL_DATA = true # switch for using local data instead of real scrobbles.  Probably want this on.
   COMPLETE_SCROBBLE_REINDEX = false # off if want to stop scraping when see scrobble already indexed.  On for complete reindex.
+  
+  MAX_SCROBBLE_PAGES = 11
+  
+  MAX_SCRAPING_TIME_BECAUSE_OF_HEROKU_TIMEOUT = 20 # don't update scrobbles for longer than this
   
   def self.update_scrobbles(user)
     if user
       i = 1
+      start_time = Time.new
       last_page = false
       new_scrobbles = true
-      while i <= MAX_SCROBBLE_PAGES && !last_page && new_scrobbles # go through all pages to explore until get to captured scrobbles
+      out_of_time = false
+      while i <= MAX_SCROBBLE_PAGES && !last_page && new_scrobbles && !out_of_time # go through max pages until get to captured scrobbles 
         if USE_REAL_DATA
           url = "http://www.last.fm/user/#{user.username}/tracks?page=#{i}"
           doc = Hpricot(open(url))
@@ -41,10 +45,8 @@ module Lastfming
             date = date_raw.at("abbr")["title"]
             scrobble = Scrobble.new_from_gathering(artist, track, date, user)
             if scrobble
-              if scrobble.already_exists?
-                if !COMPLETE_SCROBBLE_REINDEX
-                  new_scrobbles = false # stop scraping data cause seen this scrobble before, unless doing complete reindex
-                end
+              if !COMPLETE_SCROBBLE_REINDEX && scrobble.already_exists?
+                new_scrobbles = false # stop scraping data cause seen this scrobble before, unless doing complete reindex
               else # hasn't already been saved so save it
                 scrobble.save() 
               end
@@ -53,7 +55,8 @@ module Lastfming
         
           j += 1
         end
-
+        
+        out_of_time = (Time.new.tv_sec - start_time.tv_sec) < MAX_SCRAPING_TIME_BECAUSE_OF_HEROKU_TIMEOUT
         last_page = true if !doc.at("a.nextlink") # no next link so just processed last_page
         i += 1
       end
