@@ -1,15 +1,12 @@
 module Choosing
 
   DEFAULT_TIME_HOURS_EITHER_SIDE = 1
-  NUM_MOST_POPULAR_ARTISTS = 2
-  NUM_MOST_POPULAR = 2
-
+  NUM_MOST_POPULAR = 3
+  NUM_TOP_ARTISTS = 5
   
   def self.choose_scrobbles(scrobbles, criteria_method)
     return class_eval(criteria_method + "(scrobbles)")
   end
-
-  ### methods
   
   def self.day_of_week(scrobbles)
     return filter_day_of_week(scrobbles, Time.new)
@@ -54,12 +51,26 @@ module Choosing
     return return_scrobbles
   end
   
+  # pick most popular NUM_MOST_POPULAR things from passed scrobbles
   def self.most_popular(thing, aux_infos, scrobbles)
     most_popular = {}
+    things = scrobbles_to_things(thing, aux_infos, scrobbles)
+
+    i = 0
+    things_by_popularity = things.keys.sort { |x,y| things[y]["count"] <=> things[x]["count"] }
+    while i < things_by_popularity.length && i < NUM_MOST_POPULAR && most_popular.length < NUM_MOST_POPULAR
+      most_popular[things_by_popularity[i]] = things[things_by_popularity[i]]
+      i += 1
+    end
+    
+    return most_popular
+  end
+  
+  # takes scrobbles and extracts counts, specified aux_info and puts into hash keyed on thing
+  def self.scrobbles_to_things(thing, aux_infos, scrobbles)
     things = {}
     for scrobble in scrobbles
       if Util.ne(eval("scrobble.#{thing}"))
-        
         count = 0 if !things.has_key?(eval("scrobble.#{thing}"))
         count += 1
         
@@ -72,21 +83,30 @@ module Choosing
         things[eval("scrobble.#{thing}")] = return_thing
       end
     end
-
-    things_by_popularity = things.keys.sort { |x,y| things[y]["count"] <=> things[x]["count"] }
-    i = 0
-    while i < things_by_popularity.length && i < NUM_MOST_POPULAR
-      most_popular[things_by_popularity[i]] = things[things_by_popularity[i]]
-      i += 1
-    end
     
-    return most_popular
+    return things
   end
   
-  def self.albums_from_scrobbles(scrobbles)
-    most_popular_artists = Choosing.most_popular("artist", [], scrobbles)
-    popular_artist_scrobbles = Choosing.filter_scrobbles_by_artist(most_popular_artists.keys, scrobbles)
+  # choose some albums to suggest from scrobbles passed
+  def self.choose(scrobbles)
+    artists = Choosing.scrobbles_to_things("artist", [], scrobbles)
+    
+    artist_name_freq_array = []
+    for artist_name in artists.keys
+      count = artists[artist_name]["count"]
+      if count > 1 && Util.ne(artist_name)
+        (0..count).each { |i| artist_name_freq_array << artist_name }
+      end
+    end
+
+    chosen_artists = {}
+    for i in (0..NUM_TOP_ARTISTS)
+      artist_name = Util.rand_el(artist_name_freq_array)
+      chosen_artists[artist_name] = artists[artist_name]
+    end
+    
+    popular_artist_scrobbles = Choosing.filter_scrobbles_by_artist(chosen_artists.keys, scrobbles)
     popular_artist_scrobbles.each { |scrobble| scrobble.fill_in_album() }
-    return Choosing.most_popular("album", ["artist"], scrobbles)
+    return Choosing.most_popular("album", ["artist"], popular_artist_scrobbles)
   end
 end

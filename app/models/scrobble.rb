@@ -45,7 +45,6 @@ class Scrobble < ActiveRecord::Base
     if artist && track && !album
       found_album = Lastfming.get_album(artist, track)
       set_album = found_album if found_album
-      Logger.new(STDOUT).error artist + " " + track
     end
     
     if self.album != set_album && !(set_album == "" && Util.ne(self.album))

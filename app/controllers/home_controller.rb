@@ -36,6 +36,6 @@ class HomeController < ApplicationController
     def user_time_period_scrobbles(user, start_date, end_date, method)
       user_time_period_scrobbles = Scrobble.find_by_user_date(user, start_date, end_date)
       time_period_scrobbles = Choosing.choose_scrobbles(user_time_period_scrobbles, method)
-      return Choosing.albums_from_scrobbles(time_period_scrobbles)
+      return Choosing.choose(time_period_scrobbles)
     end
 end
