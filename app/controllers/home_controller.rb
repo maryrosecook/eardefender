@@ -2,7 +2,7 @@ class HomeController < ApplicationController
 
   def index
     if request.post?
-      @suggestions = {} # final array of suggestions of albums (with artist data and frequency of track plays)
+      @point_in_week_suggestions = {} # final array of suggestions of albums (with artist data and frequency of track plays)
 
       # set up user
       user = User.find_by_username(params[:username])
@@ -12,24 +12,20 @@ class HomeController < ApplicationController
       end
       cookies[:user_id] = user.id.to_s
 
+      # get user's latest scrobbles
       Lastfming.update_scrobbles(user)
 
+      # get all time most popular albums for current time of current day of week over various periods
+      Util.add_to_hash(@point_in_week_suggestions, user_time_period_scrobbles(user, nil,  nil, "point_in_week"))
+      Util.add_to_hash(@point_in_week_suggestions, user_time_period_scrobbles(user, 4.weeks.ago, 2.weeks.ago, "point_in_week"))
+      Util.add_to_hash(@point_in_week_suggestions, user_time_period_scrobbles(user, 8.weeks.ago, 4.weeks.ago, "point_in_week"))
+      @point_in_week_albums_by_artist = @point_in_week_suggestions.keys.sort { |x,y| @point_in_week_suggestions[x]["artist"] <=> @point_in_week_suggestions[y]["artist"] }
       
-
-      # get all time most popular albums for current time of current day of week
-      Util.add_to_hash(@suggestions, user_time_period_scrobbles(user, nil,  nil, "point_in_week"))
-      
-      # get most popular albums for current time of current day a while ago
-      Util.add_to_hash(@suggestions, user_time_period_scrobbles(user, 4.weeks.ago, 2.weeks.ago, "point_in_week"))
-      
-      @albums_by_artist = @suggestions.keys.sort { |x,y| @suggestions[x]["artist"] <=> @suggestions[y]["artist"] }
-      
-      # sequencing method
-      
+      # get albums most often played after most recently scrobbled album
       @latest_scrobble = Scrobble.find_latest(user)
       next_scrobbles = Sequencing.next_scrobbles(@latest_scrobble)
-      @next_albums = Choosing.most_popular("album", ["artist"], next_scrobbles, 3)
-      @next_albums_by_artist = @next_albums.keys.sort { |x,y| @next_albums[x]["artist"] <=> @next_albums[y]["artist"] }
+      @seqencing_suggestions = Choosing.most_popular("album", ["artist"], next_scrobbles, 3)
+      @sequencing_albums_by_artist = @seqencing_suggestions.keys.sort { |x,y| @seqencing_suggestions[x]["artist"] <=> @seqencing_suggestions[y]["artist"] }
       
     else # just show form
       # prime old user in form if they exist 
