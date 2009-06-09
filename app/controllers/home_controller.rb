@@ -14,6 +14,8 @@ class HomeController < ApplicationController
 
       Lastfming.update_scrobbles(user)
 
+      
+
       # get all time most popular albums for current time of current day of week
       Util.add_to_hash(@suggestions, user_time_period_scrobbles(user, nil,  nil, "point_in_week"))
       
@@ -21,6 +23,14 @@ class HomeController < ApplicationController
       Util.add_to_hash(@suggestions, user_time_period_scrobbles(user, 4.weeks.ago, 2.weeks.ago, "point_in_week"))
       
       @albums_by_artist = @suggestions.keys.sort { |x,y| @suggestions[x]["artist"] <=> @suggestions[y]["artist"] }
+      
+      # sequencing method
+      
+      @latest_scrobble = Scrobble.find_latest(user)
+      next_scrobbles = Sequencing.next_scrobbles(@latest_scrobble)
+      @next_albums = Choosing.most_popular("album", ["artist"], next_scrobbles, 3)
+      @next_albums_by_artist = @next_albums.keys.sort { |x,y| @next_albums[x]["artist"] <=> @next_albums[y]["artist"] }
+      
     else # just show form
       # prime old user in form if they exist 
       if cookies[:user_id]

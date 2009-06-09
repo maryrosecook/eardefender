@@ -15,6 +15,14 @@ class Scrobble < ActiveRecord::Base
     return scrobble
   end
   
+  def self.find_latest(user)
+    return Scrobble.find(:first, :conditions => "user_id = #{user.id}", :order => 'date desc')  
+  end
+  
+  def self.find_ordered_by_date(user)
+    return Scrobble.find(:all, :conditions => "user_id = #{user.id}", :order => 'date asc')  
+  end
+  
   def self.find_by_user_date(user, start_date, end_date)
     conditions = "1 = 1 "
     conditions += "AND user_id = #{user.id} " if user

@@ -52,13 +52,13 @@ module Choosing
   end
   
   # pick most popular NUM_MOST_POPULAR things from passed scrobbles
-  def self.most_popular(thing, aux_infos, scrobbles)
+  def self.most_popular(thing, aux_infos, scrobbles, num)
     most_popular = {}
     things = scrobbles_to_things(thing, aux_infos, scrobbles)
 
     i = 0
     things_by_popularity = things.keys.sort { |x,y| things[y]["count"] <=> things[x]["count"] }
-    while i < things_by_popularity.length && i < NUM_MOST_POPULAR && most_popular.length < NUM_MOST_POPULAR
+    while i < things_by_popularity.length && i < num && most_popular.length < num
       most_popular[things_by_popularity[i]] = things[things_by_popularity[i]]
       i += 1
     end
@@ -107,6 +107,6 @@ module Choosing
     
     popular_artist_scrobbles = Choosing.filter_scrobbles_by_artist(chosen_artists.keys, scrobbles)
     popular_artist_scrobbles.each { |scrobble| scrobble.fill_in_album() }
-    return Choosing.most_popular("album", ["artist"], popular_artist_scrobbles)
+    return Choosing.most_popular("album", ["artist"], popular_artist_scrobbles, NUM_MOST_POPULAR)
   end
 end

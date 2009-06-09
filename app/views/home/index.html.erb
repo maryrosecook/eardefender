@@ -14,16 +14,15 @@
 		
 	<!-- show listening suggestions -->
 	<% else %>
-		<% if @suggestions && @suggestions.length > 0 %>
-			<% for album in @albums_by_artist %>
-				<strong><%= @suggestions[album]["artist"] %></strong>,
-				<%= album %><br/>
-			<% end-%>
+		<% if (@suggestions && @suggestions.length > 0) || @next_albums && @next_albums.length > 0 %>
+			<%= render(:partial => 'suggestions', :locals => { :suggestions => @suggestions, :albums_by_artist => @albums_by_artist } ) %>
+			<br/>
+			<%= render(:partial => 'suggestions', :locals => { :suggestions => @next_albums, :albums_by_artist => @next_albums_by_artist } ) %>
+			<!-- Latest: <%#= @latest_scrobble.artist %> -->
 		<% else %>
-			Either you don't exist, or you haven't listened to much music.<br/>
+			No suggestions.<br/>
 		<% end-%>
 	<% end-%>
 	
-	<br/><br/><br/><br/>
-	
+	<br/><br/><br/><br/>	
 </div><br/>
