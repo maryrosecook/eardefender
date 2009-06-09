@@ -32,13 +32,12 @@ class Scrobble < ActiveRecord::Base
   
   def already_exists?
     already_exists = true
-    if self.new_record?
-      if !Scrobble.find_unique(artist, track, date, user)
-        already_exists = false
-      end
-    end
-    
+    already_exists = false if self.new_record? && !Scrobble.find_unique(artist, track, date, user)
     return already_exists
+  end
+  
+  def same?(s)
+    s && self.artist == s.artist && self.track == s.track && DateUtil.str_sql_date_time(self.date) == DateUtil.str_sql_date_time(s.date) && self.user.id == s.user.id
   end
   
   def self.find_unique(artist, track, date, user)

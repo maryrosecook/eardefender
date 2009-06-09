@@ -9,7 +9,7 @@ module Lastfming
   
   MAX_SCROBBLE_PAGES = 11
   
-  MAX_SCRAPING_TIME_BECAUSE_OF_HEROKU_TIMEOUT = 20 # don't update scrobbles for longer than this
+  MAX_SCRAPING_TIME_BECAUSE_OF_HEROKU_TIMEOUT = 16 # don't update scrobbles for longer than this
   
   def self.update_scrobbles(user)
     if user
@@ -18,6 +18,7 @@ module Lastfming
       last_page = false
       new_scrobbles = true
       out_of_time = false
+      prev_scrobble = nil
       while i <= MAX_SCROBBLE_PAGES && !last_page && new_scrobbles && !out_of_time # go through max pages until get to captured scrobbles 
         if USE_REAL_DATA
           url = "http://www.last.fm/user/#{user.username}/tracks?page=#{i}"
@@ -43,20 +44,23 @@ module Lastfming
 
           if date_raw = dates_raw[j] # got date for this track play
             date = date_raw.at("abbr")["title"]
-            scrobble = Scrobble.new_from_gathering(artist, track, date, user)
-            if scrobble
-              if !COMPLETE_SCROBBLE_REINDEX && scrobble.already_exists?
+            if scrobble = Scrobble.new_from_gathering(artist, track, date, user)
+              if !COMPLETE_SCROBBLE_REINDEX && scrobble.already_exists? && !scrobble.same?(prev_scrobble)
                 new_scrobbles = false # stop scraping data cause seen this scrobble before, unless doing complete reindex
               else # hasn't already been saved so save it
                 scrobble.save() 
               end
             end
           end
-        
+          
+          # avoid going over fucking Heroku time limit
+          out_of_time = (Time.new.tv_sec - start_time.tv_sec) > MAX_SCRAPING_TIME_BECAUSE_OF_HEROKU_TIMEOUT
+          break if out_of_time
+          
+          prev_scrobble = scrobble
           j += 1
         end
-        
-        out_of_time = (Time.new.tv_sec - start_time.tv_sec) < MAX_SCRAPING_TIME_BECAUSE_OF_HEROKU_TIMEOUT
+
         last_page = true if !doc.at("a.nextlink") # no next link so just processed last_page
         i += 1
       end
