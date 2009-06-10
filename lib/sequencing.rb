@@ -23,10 +23,6 @@ module Sequencing
       i += 1
     end
 
-    # artists = []
-    # next_scrobbles.each { |n| artists << n.artist }
-    # raise artists.inspect
-
     return next_scrobbles
   end
 end

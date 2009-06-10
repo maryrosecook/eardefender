@@ -105,7 +105,7 @@ module Choosing
       artist_name = Util.rand_el(artist_name_freq_array)
       chosen_artists[artist_name] = artists[artist_name]
     end
-    
+
     popular_artist_scrobbles = Choosing.filter_scrobbles_by_artist(chosen_artists.keys, scrobbles)
     popular_artist_scrobbles.each { |scrobble| scrobble.fill_in_album() }
     albums = Album.scrobbles_to_albums(popular_artist_scrobbles)

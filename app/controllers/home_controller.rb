@@ -15,7 +15,7 @@ class HomeController < ApplicationController
 
       # get all time most popular albums for current time of current day of week over various time periods
       @point_in_week_albums = []
-      @point_in_week_albums += user_time_period_scrobbles(user, Time.new, 2.weeks.ago, "point_in_week")
+      @point_in_week_albums += user_time_period_scrobbles(user, nil, nil, "point_in_week")
       @point_in_week_albums += user_time_period_scrobbles(user, 4.weeks.ago, 2.weeks.ago, "point_in_week")
       @point_in_week_albums += user_time_period_scrobbles(user, 8.weeks.ago, 4.weeks.ago, "point_in_week")
       @point_in_week_albums = Album.uniq_partial(@point_in_week_albums)
