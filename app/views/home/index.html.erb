@@ -1,9 +1,9 @@
 <div class="page_content_holder">
 	
 	<!-- show username form -->
-	<% if !@point_in_week_suggestions && !@seqencing_suggestions %>
+	<% if !@point_in_week_albums && !@seqencing_albums %>
 		<% form_tag do -%>
-			<span class="last_fm_username_form_label">Last.fm username</span><br/>
+			<span class="last_fm_username_form_label"><a href='http://last.fm'>Last.fm</a> username</span><br/>
 			<input class="text_field" id="username" name="username" type="text" value="<%= @username %>"/>
 			<%= submit_tag "Go", :class => 'submit_button', :onclick => "Element.show('time_warning');" %>
 		<% end-%>
@@ -11,18 +11,17 @@
 		<div id="time_warning" style="display:none;">
 			First time will take 30 secs.
 		</div>
+		<br/>
 		
 	<!-- show listening suggestions -->
 	<% else %>
-		<% if (@point_in_week_suggestions && @point_in_week_suggestions.length > 0) || (@seqencing_suggestions && @seqencing_suggestions.length > 0) %>
-			<%= render(:partial => 'suggestions', :locals => { :suggestions => @point_in_week_suggestions, :albums_by_artist => @point_in_week_albums_by_artist } ) %>
+		<% if (@point_in_week_albums && @point_in_week_albums.length > 0) || (@seqencing_albums && @seqencing_albums.length > 0) %>
+			<%= render(:partial => 'albums', :locals => { :albums => @point_in_week_albums } ) %>
 			<br/>
-			<%= render(:partial => 'suggestions', :locals => { :suggestions => @seqencing_suggestions, :albums_by_artist => @sequencing_albums_by_artist } ) %>
+			<%= render(:partial => 'albums', :locals => { :albums => @seqencing_albums } ) %>
 			<!-- Latest: <%#= @latest_scrobble.artist %> -->
 		<% else %>
 			No suggestions.<br/>
 		<% end-%>
 	<% end-%>
-	
-	<br/><br/><br/><br/>	
 </div><br/>

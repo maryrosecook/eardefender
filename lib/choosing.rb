@@ -1,8 +1,8 @@
 module Choosing
 
   DEFAULT_TIME_HOURS_EITHER_SIDE = 1
-  NUM_MOST_POPULAR = 2
-  NUM_TOP_ARTISTS = 8
+  NUM_MOST_POPULAR = 3
+  NUM_TOP_ARTISTS = 15
   
   def self.choose_scrobbles(scrobbles, criteria_method)
     return class_eval(criteria_method + "(scrobbles)")
@@ -52,17 +52,13 @@ module Choosing
   end
   
   # pick most popular NUM_MOST_POPULAR things from passed scrobbles
-  def self.most_popular(thing, aux_infos, scrobbles, num)
-    most_popular_unique = {}
-    things = scrobbles_to_things(thing, aux_infos, scrobbles)
-
+  def self.most_popular(albums, num)
+    most_popular = []
+    
     i = 0
-    most_popular = {}
-    things_by_popularity = things.keys.sort { |x,y| things[y]["count"] <=> things[x]["count"] }
-    while i < things_by_popularity.length && i < num && most_popular.length < num
-      if !Util.include_partial?(things_by_popularity[i], most_popular.keys) # filter out alt permutations
-        most_popular[things_by_popularity[i]] = things[things_by_popularity[i]]
-      end
+    albums_by_popularity = albums.sort { |x,y| y.count <=> x.count }
+    while i < albums_by_popularity.length && most_popular.length < num
+      most_popular << albums_by_popularity[i]
       i += 1
     end
     
@@ -96,7 +92,6 @@ module Choosing
     albums_with_aux_info = []
     
     artists = Choosing.scrobbles_to_things("artist", [], scrobbles)
-    
     artist_name_freq_array = []
     for artist_name in artists.keys
       count = artists[artist_name]["count"]
@@ -113,6 +108,7 @@ module Choosing
     
     popular_artist_scrobbles = Choosing.filter_scrobbles_by_artist(chosen_artists.keys, scrobbles)
     popular_artist_scrobbles.each { |scrobble| scrobble.fill_in_album() }
-    return Choosing.most_popular("album", ["artist"], popular_artist_scrobbles, NUM_MOST_POPULAR)
+    albums = Album.scrobbles_to_albums(popular_artist_scrobbles)
+    return Choosing.most_popular(albums, NUM_MOST_POPULAR)
   end
 end

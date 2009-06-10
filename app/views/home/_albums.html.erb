@@ -1,0 +1,9 @@
+<% if albums %>
+	<% for album in albums.sort {|x,y| x.artist <=> y.artist } %>
+		<% if Util.ne(album.album) %>
+			<strong><%= album.artist %></strong>, <%= album.album %><br/>
+		<% else %>
+			<strong><%= album.artist %></strong><br/>
+		<% end-%>
+	<% end-%>
+<% end-%>

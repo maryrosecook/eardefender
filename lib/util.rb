@@ -18,30 +18,6 @@ module Util
     return return_str
   end
   
-  # adds additions to hash.  Overwrites existing key entries w/ new ones
-  def self.add_to_hash(hash, additions)
-    additions.keys.each { |addition_key| hash[addition_key] = additions[addition_key] }
-    return hash
-  end
-  
-  def self.uniq_partial(array)
-    unique = []
-    array.each { |one| unique << one if !include_partial?(one, unique) }
-    return unique
-  end
-  
-  def self.include_partial?(one, array)
-    exists = false
-    for two in array
-      if one[0..3] == two[0..3]
-        exists = true 
-        break
-      end
-    end
-    
-    return exists
-  end
-  
   # shorts passed str to passed word_count
   def self.truncate(str, word_count, elipsis)
     words = str.split()

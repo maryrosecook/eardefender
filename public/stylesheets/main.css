@@ -33,7 +33,7 @@ hr { border:1px #aaa solid; height:1; }
 
 .homepage_intro { width:300; }
 .tagline { font-size:13; }
-.byline { font-size:12; }
+.footer { border-top:1px solid black; padding-top:2px; width:245px; }
 
 .last_fm_username_form_table { width:350; }
 .last_fm_username_form_label { margin: 0; line-height:8px; }
