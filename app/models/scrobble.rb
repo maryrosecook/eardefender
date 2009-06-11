@@ -54,7 +54,7 @@ class Scrobble < ActiveRecord::Base
       set_album = found_album if found_album
     end
     
-    if self.album != set_album && set_album != ""
+    if self.album != set_album && !(set_album == "" && Util.ne(self.album))
       self.album = set_album
       self.save()
     end

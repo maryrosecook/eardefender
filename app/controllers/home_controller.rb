@@ -21,7 +21,7 @@ class HomeController < ApplicationController
       @point_in_week_albums = Album.uniq_partial(@point_in_week_albums)
       
       # get albums most often played after most recently scrobbled album
-      @latest_scrobble = Scrobble.find_latest(user)
+      @latest_scrobble = Scrobble.find(18) #Scrobble.find_latest(user)
       next_scrobbles = Sequencing.next_scrobbles(@latest_scrobble)
       all_albums = Choosing.choose(next_scrobbles)
       @seqencing_albums = Choosing.most_popular(all_albums, 3)

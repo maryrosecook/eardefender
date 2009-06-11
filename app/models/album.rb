@@ -5,7 +5,7 @@ class Album
     new_album = self.new()
     Util.ne(in_album) ? new_album.album = in_album : new_album.album = ""
     Util.ne(in_artist) ? new_album.artist = in_artist : new_album.artist = ""
-    new_album.count = 0
+    new_album.count = 1
     return new_album
   end
   
@@ -14,21 +14,17 @@ class Album
   end
   
   def self.find(array, in_album, in_artist)
-    found_album = nil
     for array_album in array
-      if in_album == array_album.album && in_artist == array_album.artist
-        found_album = array_album
-        break
-      end
+      return array_album if array_album.equal?(self.new_one(in_album, in_artist))
     end
     
-    return found_album
+    return nil
   end
   
   # takes scrobbles and extracts counts, specified aux_info and puts into hash keyed on thing
   def self.scrobbles_to_albums(scrobbles)
     return_albums = []
-    
+
     all_albums = []
     for scrobble in scrobbles
       if existing_album = Album.find(all_albums, scrobble.album, scrobble.artist)
@@ -40,17 +36,17 @@ class Album
 
     # make master list of specific albums or, if none available for an artist, just a non-album-specific suggestion
     all_albums.each { |album| return_albums << album if album.complete? }
-    for all_album in all_albums
-      if !all_album.complete?
+    for album in all_albums
+      if !album.complete?
         album_for_artist = false
         for return_album in return_albums
-          if return_album.artist == all_album.artist
+          if return_album.artist == album.artist
             album_for_artist = true
             break
           end
         end
         
-        return_albums << all_album if !album_for_artist
+        return_albums << album if !album_for_artist
       end
     end
 
@@ -78,8 +74,8 @@ class Album
     return unique
   end
   
-  def equal?(other)
-    self.album == other.album && self.artist == other.artist
+  def equal?(o)
+    self.artist == o.artist && (self.album == o.album || (!Util.ne(self.album) && !Util.ne(o.album)))
   end
   
   def partial_equal?(other)
