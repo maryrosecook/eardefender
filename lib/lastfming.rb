@@ -20,21 +20,11 @@ module Lastfming
       out_of_time = false
       prev_scrobble = nil
       while i <= MAX_SCROBBLE_PAGES && !last_page && new_scrobbles && !out_of_time # go through max pages until get to captured scrobbles 
-        if USE_REAL_DATA
-          url = "http://www.last.fm/user/#{user.username}/tracks?page=#{i}"
-          doc = Hpricot(open(url))
-        else # just testing so use local files
-          file_str = ""
-          File.open("public/test_data/tracks#{i}.html", "r") do |f|
-            file_str = f.read
-          end
-          doc = Hpricot(file_str)
-        end
-      
-        # get all track details tds and play date tds
+        # get page data and extract all track details tds and play date tds
+        doc = get_data_page(user, i)
         tracks_raw = doc.search("td.subjectCell")
         dates_raw = doc.search("td.dateCell")
-      
+
         # whizz through all tracks on this page
         j = 0
         for track_raw in tracks_raw
@@ -62,9 +52,27 @@ module Lastfming
         end
 
         last_page = true if !doc.at("a.nextlink") # no next link so just processed last_page
+
         i += 1
       end
     end
+
+  end
+  
+  def self.get_data_page(user, i)
+    doc = nil
+    if USE_REAL_DATA
+      url = "http://www.last.fm/user/#{user.username}/tracks?page=#{i}"
+      doc = Hpricot(open(url))
+    else # just testing so use local files
+      file_str = ""
+      File.open("public/test_data/tracks#{i}.html", "r") do |f|
+        file_str = f.read
+      end
+      doc = Hpricot(file_str)
+    end
+
+    return doc
   end
   
   LAST_FM_API_KEY = "0fe92bb2a3b1e5b714cc39e2df8da14f"

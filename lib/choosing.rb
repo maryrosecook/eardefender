@@ -4,6 +4,8 @@ module Choosing
   NUM_MOST_POPULAR = 3
   NUM_TOP_ARTISTS = 15
   
+  TIME_FILLING_IN_ALBUMS_FOR_HEROKU = 8
+  
   def self.choose_scrobbles(scrobbles, criteria_method)
     return class_eval(criteria_method + "(scrobbles)")
   end
@@ -107,7 +109,13 @@ module Choosing
     end
 
     popular_artist_scrobbles = Choosing.filter_scrobbles_by_artist(chosen_artists.keys, scrobbles)
-    popular_artist_scrobbles.each { |scrobble| scrobble.fill_in_album() }
+    
+    start = Time.new.tv_sec
+    for scrobble in popular_artist_scrobbles
+      scrobble.fill_in_album()
+      break if (Time.new.tv_sec - start) > TIME_FILLING_IN_ALBUMS_FOR_HEROKU
+    end
+    
     albums = Album.scrobbles_to_albums(popular_artist_scrobbles)
     return Choosing.most_popular(albums, NUM_MOST_POPULAR)
   end
