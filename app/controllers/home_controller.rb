@@ -22,7 +22,6 @@ class HomeController < ApplicationController
       
       # get albums most often played after most recently scrobbled album
       @latest_scrobble = Scrobble.find_latest(user)
-      raise @latest_scrobble.inspect
       next_scrobbles = Sequencing.next_scrobbles(@latest_scrobble)
       all_albums = Choosing.choose(next_scrobbles)
       @seqencing_albums = Choosing.most_popular(all_albums, 3)
