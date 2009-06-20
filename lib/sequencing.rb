@@ -17,6 +17,7 @@ module Sequencing
             if !same_artist
               next_scrobbles << next_scrobble
             end
+            
             j += 1
           end
         end
