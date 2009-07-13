@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# This file is auto-generated from the current state of the database. Instead of editing this file,
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -8,19 +8,19 @@
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
-
+ 
 ActiveRecord::Schema.define(:version => 1) do
-
+ 
   create_table "scrobbles", :force => true do |t|
-    t.string   "artist",  :limit => 1000
-    t.string   "track",   :limit => 1000
-    t.string   "album",   :limit => 1000
+    t.string "artist", :limit => 1000
+    t.string "track", :limit => 1000
+    t.string "album", :limit => 1000
     t.datetime "date"
-    t.integer  "user_id"
+    t.integer "user_id"
   end
-
+ 
   create_table "users", :force => true do |t|
     t.string "username"
   end
-
+ 
 end

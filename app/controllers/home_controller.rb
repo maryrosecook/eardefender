@@ -2,10 +2,12 @@ class HomeController < ApplicationController
 
   def index
     if request.post? # make some suggestions
+      redirect_to("/#{params[:username]}")
+    elsif Util.ne(params[:id])
       # set up user
-      user = User.find_by_username(params[:username])
+      user = User.find_by_username(params[:id])
       if !user
-        user = User.new_from_request(params[:username])
+        user = User.new_from_request(params[:id])
         user.save()
       end
       cookies[:user_id] = user.id.to_s
